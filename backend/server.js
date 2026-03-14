@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const cors = require("cors");
 const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
@@ -18,15 +19,13 @@ const app = express();
 connectDB();
 
 app.use(express.json());
+app.use(cors());
 
-// Routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/tasks", taskRoutes);
 
-// Swagger Docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Test protected route
 app.get("/api/v1/protected", protect, (req, res) => {
   res.json({
     message: "Protected route accessed",
@@ -34,7 +33,7 @@ app.get("/api/v1/protected", protect, (req, res) => {
   });
 });
 
-// Test admin route
+
 app.get("/api/v1/admin", protect, authorizeRoles("admin"), (req, res) => {
   res.json({
     message: "Welcome Admin",
@@ -42,12 +41,12 @@ app.get("/api/v1/admin", protect, authorizeRoles("admin"), (req, res) => {
   });
 });
 
-// Root route
+
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// Error Middleware
+
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
