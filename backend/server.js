@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
+const taskRoutes = require("./routes/taskRoutes");
+
 const protect = require("./middleware/authMiddleware");
 const authorizeRoles = require("./middleware/roleMiddleware");
 
@@ -14,7 +16,11 @@ connectDB();
 
 app.use(express.json());
 
+// Auth routes
 app.use("/api/v1/auth", authRoutes);
+
+// Task routes
+app.use("/api/v1/tasks", taskRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");
