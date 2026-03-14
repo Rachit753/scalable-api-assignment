@@ -33,7 +33,6 @@ app.get("/api/v1/protected", protect, (req, res) => {
   });
 });
 
-
 app.get("/api/v1/admin", protect, authorizeRoles("admin"), (req, res) => {
   res.json({
     message: "Welcome Admin",
@@ -41,11 +40,13 @@ app.get("/api/v1/admin", protect, authorizeRoles("admin"), (req, res) => {
   });
 });
 
-
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 app.use(errorHandler);
 
