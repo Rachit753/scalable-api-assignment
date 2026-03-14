@@ -127,7 +127,7 @@ scalable-api-assignment
 │       └── App.js
 │
 ├── assets
-│   ├── dashboard.png
+│   └── dashboard.png
 │
 ├── package.json
 └── README.md
