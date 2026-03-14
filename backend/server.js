@@ -7,6 +7,7 @@ const taskRoutes = require("./routes/taskRoutes");
 
 const protect = require("./middleware/authMiddleware");
 const authorizeRoles = require("./middleware/roleMiddleware");
+const errorHandler = require("./middleware/errorMiddleware");
 
 dotenv.config();
 
@@ -16,16 +17,13 @@ connectDB();
 
 app.use(express.json());
 
-// Auth routes
-app.use("/api/v1/auth", authRoutes);
 
-// Task routes
+// Routes
+app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/tasks", taskRoutes);
 
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
 
+// Test protected route
 app.get("/api/v1/protected", protect, (req, res) => {
   res.json({
     message: "Protected route accessed",
@@ -33,12 +31,25 @@ app.get("/api/v1/protected", protect, (req, res) => {
   });
 });
 
+
+// Test admin route
 app.get("/api/v1/admin", protect, authorizeRoles("admin"), (req, res) => {
   res.json({
     message: "Welcome Admin",
     user: req.user
   });
 });
+
+
+// Root route
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
+
+
+// Error Middleware
+app.use(errorHandler);
+
 
 const PORT = process.env.PORT || 5000;
 
