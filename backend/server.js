@@ -9,6 +9,8 @@ const protect = require("./middleware/authMiddleware");
 const authorizeRoles = require("./middleware/roleMiddleware");
 const errorHandler = require("./middleware/errorMiddleware");
 
+const { swaggerUi, swaggerDocument } = require("./docs/swagger");
+
 dotenv.config();
 
 const app = express();
@@ -17,11 +19,12 @@ connectDB();
 
 app.use(express.json());
 
-
 // Routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/tasks", taskRoutes);
 
+// Swagger Docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Test protected route
 app.get("/api/v1/protected", protect, (req, res) => {
@@ -31,7 +34,6 @@ app.get("/api/v1/protected", protect, (req, res) => {
   });
 });
 
-
 // Test admin route
 app.get("/api/v1/admin", protect, authorizeRoles("admin"), (req, res) => {
   res.json({
@@ -40,16 +42,13 @@ app.get("/api/v1/admin", protect, authorizeRoles("admin"), (req, res) => {
   });
 });
 
-
 // Root route
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-
 // Error Middleware
 app.use(errorHandler);
-
 
 const PORT = process.env.PORT || 5000;
 
