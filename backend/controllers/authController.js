@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 const generateToken = require("../utils/generateToken");
 const { registerSchema, loginSchema } = require("../validators/authValidator");
 
-// Register User
 exports.registerUser = async (req, res) => {
   try {
 
@@ -45,8 +44,6 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-
-// Login User
 exports.loginUser = async (req, res) => {
   try {
 
