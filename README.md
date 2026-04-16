@@ -1,244 +1,248 @@
-# Scalable REST API with Authentication and Role-Based Access
+# Scalable REST API with Authentication & Role-Based Access
 
-A full-stack application demonstrating a secure and scalable backend architecture with a basic frontend interface to interact with REST APIs.
-
----
-
-# Overview
-
-This project implements a **scalable REST API** with authentication, role-based authorization, and CRUD operations for task management.
-
-The backend is built with Node.js and Express, while a lightweight React frontend provides a simple interface for interacting with the APIs.
-
-The project demonstrates key backend development concepts including:
-
-* Secure user authentication
-* Role-based access control
-* Modular project architecture
-* Input validation and error handling
-* API documentation
-* Frontend integration
-
-The goal of this project is to showcase how to design and structure a maintainable backend system suitable for real-world applications.
+A full-stack application demonstrating a **secure, scalable backend architecture** with a modern frontend UI for interacting with REST APIs.
 
 ---
 
-# Application Screenshot
+## Overview
 
-Dashboard interface showing task creation, editing, status management, and deletion.
-![Dashboard Screenshot](assets/dashboard.png)
+This project implements a **production-ready REST API** with:
 
----
-
-# Features
-
-## Authentication
-
-* User registration
-* User login
-* Password hashing using bcrypt
 * JWT-based authentication
+* Role-based authorization (User & Admin)
+* Task management system (CRUD)
+* Modular backend architecture
+* Security best practices
+* Swagger API documentation
+* Modern glassmorphism UI
 
-## Authorization
+The goal is to showcase **backend engineering skills + real-world system design thinking**.
 
-* Role-based access control (user and admin)
-* Protected routes using middleware
+---
 
-## Task Management
+## Application Screenshots
+
+| Register Page | Login Page |
+|----------------|-------------------|
+| ![](./assets/register.png) | ![](./assets/login.png) |
+
+| Dashboard | Swagger Docs |
+|------------------|-------------------|
+| ![](./assets/dashboard.png) | ![](./assets/swagger_docs.png) |
+---
+
+## Features
+
+### Authentication
+
+* User registration & login
+* Password hashing using **bcrypt**
+* JWT-based authentication
+* Token expiration handling
+
+---
+
+### Authorization
+
+* Role-based access control:
+
+  * `user`
+  * `admin`
+* Protected routes via middleware
+* Admin-only endpoints
+
+---
+
+### Task Management
 
 Authenticated users can:
 
 * Create tasks
-* View their tasks
+* View tasks (with pagination & filtering)
 * Update tasks
 * Delete tasks
-* Update task status
 
-Supported task statuses:
+Task statuses:
 
-* pending
-* in-progress
-* completed
-
-Each task is associated with the authenticated user.
-
-## Frontend Interface
-
-The React frontend allows users to:
-
-* Register an account
-* Log in to the system
-* Access a protected dashboard
-* Create tasks
-* Update tasks and their status
-* Delete tasks
-* Log out
+* `pending`
+* `in-progress`
+* `completed`
 
 ---
 
-# Project Structure
+### Admin Features
+
+* View all users
+* View all tasks
+* Delete any task
+
+---
+
+### Security
+
+* JWT authentication
+* Password hashing
+* Rate limiting (API protection)
+* Helmet (secure HTTP headers)
+* Input validation using Joi
+
+---
+
+### API Features
+
+* RESTful API design
+* API versioning (`/api/v1`)
+* Pagination & filtering
+* Standardized response format
+* Centralized error handling
+
+---
+
+### API Documentation
+
+* Swagger UI integration
+* Interactive API testing
+* Bearer token authentication support
+
+Access:
+
+```
+http://localhost:5000/api-docs
+```
+
+---
+
+### Frontend (React)
+
+* Modern **glassmorphism UI**
+* Toast notifications (react-hot-toast)
+* Responsive layout
+* Protected dashboard
+* Full CRUD integration
+
+---
+
+## Project Structure
 
 ```
 scalable-api-assignment
 │
 ├── backend
-│   ├── config
-│   │   └── db.js
-│   │
-│   ├── controllers
-│   │   ├── authController.js
-│   │   └── taskController.js
-│   │
-│   ├── middleware
-│   │   ├── authMiddleware.js
-│   │   ├── roleMiddleware.js
-│   │   └── errorMiddleware.js
-│   │
-│   ├── models
-│   │   ├── User.js
-│   │   └── Task.js
-│   │
-│   ├── routes
-│   │   ├── authRoutes.js
-│   │   └── taskRoutes.js
-│   │
-│   ├── validators
-│   │   └── authValidator.js
-│   │
-│   ├── utils
-│   │   └── generateToken.js
-│   │
-│   ├── docs
-│   │   └── swagger.js
-│   │
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── utils/
+│   ├── validators/
+│   ├── docs/
 │   └── server.js
 │
 ├── frontend
-│   ├── public
-│   └── src
-│       ├── pages
-│       │   ├── Login.js
-│       │   ├── Register.js
-│       │   └── Dashboard.js
-│       │
-│       ├── services
-│       │   └── api.js
-│       │
-│       └── App.js
+│   ├── src/
+│   │   ├── pages/
+│   │   ├── components/
+│   │   ├── services/
+│   │   └── App.js
 │
-├── assets
-│   └── dashboard.png
+├── assets/
+│   ├── login.png
+│   ├── register.png
+|   ├── dashboard.png
+│   └── swagger_docs.png
 │
-├── package.json
 └── README.md
 ```
 
 ---
 
-# Technology Stack
+## Tech Stack
 
-## Backend
+### Backend
 
 * Node.js
 * Express.js
 * MongoDB Atlas
 * Mongoose
-* JSON Web Token (JWT)
-* bcrypt
-* Joi validation
+* JWT (Authentication)
+* bcrypt (Hashing)
+* Joi (Validation)
 * Swagger UI
-
-## Frontend
-
-* React
-* React Router
-* Axios
 
 ---
 
-# API Endpoints
+### Frontend
 
-## Authentication
+* React.js
+* React Router
+* Axios
+* React Hot Toast
+
+---
+
+## API Endpoints
+
+### Authentication
 
 ```
 POST /api/v1/auth/register
 POST /api/v1/auth/login
 ```
 
-## Tasks
+---
+
+### Tasks
 
 ```
 GET    /api/v1/tasks
+GET    /api/v1/tasks/:id
 POST   /api/v1/tasks
 PUT    /api/v1/tasks/:id
 DELETE /api/v1/tasks/:id
 ```
 
-All task routes require a JWT token.
+---
 
-Example request header:
+### Admin
 
 ```
-Authorization: Bearer <token>
+GET    /api/v1/admin/users
+GET    /api/v1/admin/tasks
+DELETE /api/v1/admin/tasks/:id
 ```
 
 ---
 
-# Example API Response
-
-Login Response
+### Headers
 
 ```
-{
-  "message": "Login successful",
-  "token": "JWT_TOKEN",
-  "user": {
-    "id": "user_id",
-    "name": "Rachit",
-    "email": "user@test.com",
-    "role": "user"
-  }
-}
+Authorization: Bearer <JWT_TOKEN>
 ```
 
 ---
 
-# API Documentation
+## Setup & Installation
 
-Interactive API documentation is available through Swagger.
-
-Access the documentation at:
+### Clone Repository
 
 ```
-http://localhost:5000/api-docs
-```
-
-Swagger allows developers to explore and test API endpoints directly from the browser.
-
----
-
-# Setup
-
-## 1. Clone the Repository
-
-```
-git clone <repository-url>
+git clone https://github.com/Rachit753/scalable-api-assignment.git
 cd scalable-api-assignment
 ```
 
 ---
 
-## 2. Install Dependencies
+### Install Dependencies
 
 ```
-npm install
+npm run install:all
 ```
 
 ---
 
-## 3. Environment Configuration
+### Environment Variables
 
-Create a `.env` file inside the backend folder.
+Create `.env` inside `/backend`:
 
 ```
 PORT=5000
@@ -249,68 +253,54 @@ JWT_EXPIRE=1d
 
 ---
 
-## 4. Run the Application
-
-Start both backend and frontend together:
+### Run Application
 
 ```
 npm run dev
 ```
 
-Backend runs on:
+---
 
-```
-http://localhost:5000
-```
+### URLs
 
-Frontend runs on:
-
-```
-http://localhost:3000
-```
+| Service      | URL                            |
+| ------------ | ------------------------------ |
+| Frontend     | http://localhost:3000          |
+| Backend      | http://localhost:5000          |
+| Swagger Docs | http://localhost:5000/api-docs |
 
 ---
 
-# Security Practices
+## Scalability Considerations
 
-The project implements several security measures:
+This project is designed with scalability in mind:
 
-* Password hashing using bcrypt
-* JWT-based authentication
-* Authorization middleware for protected routes
-* Input validation using Joi
-* Centralized error handling
-* Protected APIs using Bearer tokens
-
----
-
-# Scalability Considerations
-
-The backend is designed with scalability in mind through:
-
-* Modular architecture
-* Separation of concerns (controllers, routes, middleware)
-* Stateless authentication using JWT
+* Modular architecture (controllers, routes, middleware)
+* Stateless authentication (JWT)
 * API versioning
-* Input validation and error middleware
+* Database abstraction with Mongoose
 
-Potential future improvements include:
+### Future Improvements
 
 * Redis caching
 * Docker containerization
 * Microservices architecture
-* Rate limiting
-* Centralized logging and monitoring
+* Load balancing
+* Centralized logging & monitoring
 
 ---
 
-# Author
+## Key Highlights
 
-Rachit
+* Clean and maintainable code structure
+* Real-world backend patterns
+* Secure API implementation
+* Full frontend-backend integration
+* Production-ready architecture approach
+
+---
+
+## Author
+
+**Rachit**
 Computer Science Engineering Student
-
----
-
-# License
-
-This project is created for educational and internship evaluation purposes.
