@@ -14,9 +14,9 @@ function Dashboard() {
   const fetchTasks = async () => {
     try {
       const res = await API.get("/tasks");
-      setTasks(res.data.data.tasks); 
+      setTasks(res.data.data.tasks);
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to fetch tasks");
+      alert("Failed to fetch tasks");
     }
   };
 
@@ -26,30 +26,19 @@ function Dashboard() {
 
   const handleSubmit = async () => {
     try {
-      if (!title.trim()) {
-        return alert("Title is required");
-      }
-
       if (editId) {
-        await API.put(`/tasks/${editId}`, {
-          title,
-          status
-        });
+        await API.put(`/tasks/${editId}`, { title, status });
         setEditId(null);
       } else {
-        await API.post("/tasks", {
-          title,
-          status
-        });
+        await API.post("/tasks", { title, status });
       }
 
       setTitle("");
       setStatus("pending");
 
       fetchTasks();
-
     } catch (error) {
-      alert(error.response?.data?.message || "Operation failed");
+      alert("Operation failed");
     }
   };
 
@@ -60,12 +49,8 @@ function Dashboard() {
   };
 
   const deleteTask = async (id) => {
-    try {
-      await API.delete(`/tasks/${id}`);
-      fetchTasks();
-    } catch (error) {
-      alert(error.response?.data?.message || "Delete failed");
-    }
+    await API.delete(`/tasks/${id}`);
+    fetchTasks();
   };
 
   const logout = () => {
@@ -74,63 +59,48 @@ function Dashboard() {
   };
 
   return (
-    <div style={{ padding: "40px" }}>
+    <div className="container">
+      <div className="glass-card" style={{ width: "500px" }}>
 
-      <h2>Dashboard</h2>
+        <h2>Dashboard</h2>
 
-      <button onClick={logout}>Logout</button>
+        <button onClick={logout}>Logout</button>
 
-      <br /><br />
+        <input
+          placeholder="Task title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
 
-      <input
-        placeholder="Task title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
+        <select value={status} onChange={(e) => setStatus(e.target.value)}>
+          <option value="pending">Pending</option>
+          <option value="in-progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
 
-      <select
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-        style={{ marginLeft: "10px" }}
-      >
-        <option value="pending">Pending</option>
-        <option value="in-progress">In Progress</option>
-        <option value="completed">Completed</option>
-      </select>
+        <button onClick={handleSubmit}>
+          {editId ? "Update Task" : "Add Task"}
+        </button>
 
-      <button
-        onClick={handleSubmit}
-        style={{ marginLeft: "10px" }}
-      >
-        {editId ? "Update Task" : "Add Task"}
-      </button>
+        <div style={{ marginTop: "20px" }}>
+          {tasks.map((task) => (
+            <div key={task._id} style={{
+              background: "rgba(255,255,255,0.1)",
+              padding: "10px",
+              borderRadius: "10px",
+              marginBottom: "10px"
+            }}>
+              <strong>{task.title}</strong> ({task.status})
 
-      <ul style={{ marginTop: "20px" }}>
+              <div>
+                <button onClick={() => editTask(task)}>Edit</button>
+                <button onClick={() => deleteTask(task._id)}>Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
 
-        {tasks.map((task) => (
-          <li key={task._id}>
-
-            {task.title} — ({task.status})
-
-            <button
-              onClick={() => editTask(task)}
-              style={{ marginLeft: "10px" }}
-            >
-              Edit
-            </button>
-
-            <button
-              onClick={() => deleteTask(task._id)}
-              style={{ marginLeft: "10px" }}
-            >
-              Delete
-            </button>
-
-          </li>
-        ))}
-
-      </ul>
-
+      </div>
     </div>
   );
 }

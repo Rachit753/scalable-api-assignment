@@ -4,85 +4,62 @@ import { useNavigate } from "react-router-dom";
 
 function Register() {
 
-const [form, setForm] = useState({
+  const [form, setForm] = useState({
     name: "",
     email: "",
     password: ""
-});
+  });
 
-const navigate = useNavigate();
+  const [message, setMessage] = useState("");
 
-const handleChange = (e) => {
-    setForm({
-    ...form,
-    [e.target.name]: e.target.value
-    });
-};
+  const navigate = useNavigate();
 
-const handleSubmit = async (e) => {
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      await API.post("/auth/register", form);
 
-    await API.post("/auth/register", form);
+      setMessage("Registration successful");
 
-    alert("Registration successful");
-
-    navigate("/");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
 
     } catch (error) {
-
-    alert(error.response?.data?.message || "Registration failed");
-
+      setMessage(error.response?.data?.message || "Registration failed");
     }
-};
+  };
 
-return (
-    <div style={{ padding: "40px" }}>
+  return (
+    <div className="container">
+      <div className="glass-card">
 
-    <h2>Register</h2>
+        <h2>Register</h2>
 
-    <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
 
-        <input
-        name="name"
-        placeholder="Name"
-        onChange={handleChange}
-        />
+          <input name="name" placeholder="Name" onChange={handleChange} />
+          <input name="email" placeholder="Email" onChange={handleChange} />
+          <input name="password" type="password" placeholder="Password" onChange={handleChange} />
 
-        <br /><br />
+          <button type="submit">Register</button>
 
-        <input
-        name="email"
-        placeholder="Email"
-        onChange={handleChange}
-        />
+        </form>
 
-        <br /><br />
+        <p>{message}</p>
 
-        <input
-        name="password"
-        type="password"
-        placeholder="Password"
-        onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <button type="submit">
-        Register
+        <button onClick={() => navigate("/")}>
+          Go to Login
         </button>
 
-    </form>
-
-    <br />
-
-    <button onClick={() => navigate("/")}>
-        Go to Login
-    </button>
-
+      </div>
     </div>
-);
+  );
 }
 
 export default Register;

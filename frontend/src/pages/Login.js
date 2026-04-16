@@ -4,78 +4,68 @@ import { useNavigate } from "react-router-dom";
 
 function Login() {
 
-const [form, setForm] = useState({
-    email: "",
-    password: ""
-});
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [message, setMessage] = useState("");
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const handleChange = (e) => {
-    setForm({
-    ...form,
-    [e.target.name]: e.target.value
-    });
-};
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      const res = await API.post("/auth/login", form);
 
-    const res = await API.post("/auth/login", form);
+      localStorage.setItem("token", res.data.data.token);
 
-    localStorage.setItem("token", res.data.data.token);
+      setMessage("Login successful");
 
-    alert("Login successful");
-
-    navigate("/dashboard");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
 
     } catch (error) {
-
-    alert(error.response?.data?.message || "Login failed");
-
+      setMessage(error.response?.data?.message || "Login failed ");
     }
-};
+  };
 
-return (
-    <div style={{ padding: "40px" }}>
+  return (
+    <div className="container">
+      <div className="glass-card">
 
-    <h2>Login</h2>
+        <h2>Login</h2>
 
-    <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
 
-        <input
-        name="email"
-        placeholder="Email"
-        onChange={handleChange}
-        />
+          <input
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+          />
 
-        <br /><br />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+          />
 
-        <input
-        name="password"
-        type="password"
-        placeholder="Password"
-        onChange={handleChange}
-        />
+          <button type="submit">Login</button>
 
-        <br /><br />
+        </form>
 
-        <button type="submit">
-        Login
+        <p>{message}</p>
+
+        <button onClick={() => navigate("/register")}>
+          Go to Register
         </button>
 
-    </form>
-
-    <br />
-
-    <button onClick={() => navigate("/register")}>
-        Go to Register
-    </button>
-
+      </div>
     </div>
-);
+  );
 }
 
 export default Login;
