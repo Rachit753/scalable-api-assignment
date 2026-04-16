@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
+const morgan = require("morgan");
 
 const connectDB = require("./config/db");
 
@@ -24,6 +25,8 @@ connectDB();
 
 app.use(cors());
 app.use(express.json());
+
+app.use(morgan("dev"));
 
 app.use(helmet());
 
