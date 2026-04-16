@@ -25,8 +25,7 @@ const handleSubmit = async (e) => {
 
     const res = await API.post("/auth/login", form);
 
-      // save token
-    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("token", res.data.data.token);
 
     alert("Login successful");
 

@@ -4,160 +4,135 @@ import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
 
-const [tasks, setTasks] = useState([]);
-const [title, setTitle] = useState("");
-const [status, setStatus] = useState("pending");
-const [editId, setEditId] = useState(null);
+  const [tasks, setTasks] = useState([]);
+  const [title, setTitle] = useState("");
+  const [status, setStatus] = useState("pending");
+  const [editId, setEditId] = useState(null);
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const fetchTasks = async () => {
+  const fetchTasks = async () => {
     try {
-
-    const res = await API.get("/tasks");
-
-    setTasks(res.data);
-
+      const res = await API.get("/tasks");
+      setTasks(res.data.data.tasks); 
     } catch (error) {
-
-    alert("Failed to fetch tasks");
-
+      alert(error.response?.data?.message || "Failed to fetch tasks");
     }
-};
+  };
 
-useEffect(() => {
+  useEffect(() => {
     fetchTasks();
-}, []);
+  }, []);
 
-const handleSubmit = async () => {
-
+  const handleSubmit = async () => {
     try {
+      if (!title.trim()) {
+        return alert("Title is required");
+      }
 
-    if (editId) {
-
+      if (editId) {
         await API.put(`/tasks/${editId}`, {
-        title,
-        status
+          title,
+          status
         });
-
         setEditId(null);
-
-    } else {
-
+      } else {
         await API.post("/tasks", {
-        title,
-        status
+          title,
+          status
         });
+      }
 
-    }
+      setTitle("");
+      setStatus("pending");
 
-    setTitle("");
-    setStatus("pending");
-
-    fetchTasks();
+      fetchTasks();
 
     } catch (error) {
-
-    alert("Operation failed");
-
+      alert(error.response?.data?.message || "Operation failed");
     }
-};
+  };
 
-const editTask = (task) => {
-
+  const editTask = (task) => {
     setTitle(task.title);
     setStatus(task.status);
     setEditId(task._id);
+  };
 
-};
-
-
-const deleteTask = async (id) => {
-
+  const deleteTask = async (id) => {
     try {
-
-    await API.delete(`/tasks/${id}`);
-
-    fetchTasks();
-
+      await API.delete(`/tasks/${id}`);
+      fetchTasks();
     } catch (error) {
-
-    alert("Delete failed");
-
+      alert(error.response?.data?.message || "Delete failed");
     }
-};
+  };
 
-
-const logout = () => {
-
+  const logout = () => {
     localStorage.removeItem("token");
-
     navigate("/");
+  };
 
-};
-
-return (
+  return (
     <div style={{ padding: "40px" }}>
 
-    <h2>Dashboard</h2>
+      <h2>Dashboard</h2>
 
-    <button onClick={logout}>Logout</button>
+      <button onClick={logout}>Logout</button>
 
-    <br /><br />
+      <br /><br />
 
-    <input
+      <input
         placeholder="Task title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-    />
+      />
 
-    <select
+      <select
         value={status}
         onChange={(e) => setStatus(e.target.value)}
         style={{ marginLeft: "10px" }}
-    >
+      >
         <option value="pending">Pending</option>
         <option value="in-progress">In Progress</option>
         <option value="completed">Completed</option>
-    </select>
+      </select>
 
-    <button
+      <button
         onClick={handleSubmit}
         style={{ marginLeft: "10px" }}
-    >
+      >
         {editId ? "Update Task" : "Add Task"}
-    </button>
+      </button>
 
-    <ul style={{ marginTop: "20px" }}>
+      <ul style={{ marginTop: "20px" }}>
 
         {tasks.map((task) => (
-
-        <li key={task._id}>
+          <li key={task._id}>
 
             {task.title} — ({task.status})
 
             <button
-            onClick={() => editTask(task)}
-            style={{ marginLeft: "10px" }}
+              onClick={() => editTask(task)}
+              style={{ marginLeft: "10px" }}
             >
-            Edit
+              Edit
             </button>
 
             <button
-            onClick={() => deleteTask(task._id)}
-            style={{ marginLeft: "10px" }}
+              onClick={() => deleteTask(task._id)}
+              style={{ marginLeft: "10px" }}
             >
-            Delete
+              Delete
             </button>
 
-        </li>
-
+          </li>
         ))}
 
-    </ul>
+      </ul>
 
     </div>
-);
+  );
 }
 
 export default Dashboard;

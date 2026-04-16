@@ -8,6 +8,7 @@ const {
 const { successResponse, errorResponse } = require("../utils/apiResponse");
 
 exports.createTask = asyncHandler(async (req, res) => {
+
   const { error } = createTaskSchema.validate(req.body);
 
   if (error) {
@@ -30,9 +31,7 @@ exports.getTasks = asyncHandler(async (req, res) => {
   const limit = parseInt(req.query.limit) || 5;
   const status = req.query.status;
 
-  const query = {
-    createdBy: req.user.id
-  };
+  const query = { createdBy: req.user.id };
 
   if (status) {
     query.status = status;
@@ -53,10 +52,24 @@ exports.getTasks = asyncHandler(async (req, res) => {
     page,
     pages: Math.ceil(total / limit)
   });
+});
 
+exports.getTaskById = asyncHandler(async (req, res) => {
+
+  const task = await Task.findOne({
+    _id: req.params.id,
+    createdBy: req.user.id
+  });
+
+  if (!task) {
+    return errorResponse(res, 404, "Task not found");
+  }
+
+  return successResponse(res, 200, "Task fetched successfully", task);
 });
 
 exports.updateTask = asyncHandler(async (req, res) => {
+
   const { error } = updateTaskSchema.validate(req.body);
 
   if (error) {
@@ -82,6 +95,7 @@ exports.updateTask = asyncHandler(async (req, res) => {
 });
 
 exports.deleteTask = asyncHandler(async (req, res) => {
+
   const task = await Task.findOneAndDelete({
     _id: req.params.id,
     createdBy: req.user.id
