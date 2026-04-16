@@ -5,13 +5,13 @@ const {
   updateTaskSchema
 } = require("../validators/taskValidator");
 
+const { successResponse, errorResponse } = require("../utils/apiResponse");
+
 exports.createTask = asyncHandler(async (req, res) => {
   const { error } = createTaskSchema.validate(req.body);
 
   if (error) {
-    return res.status(400).json({
-      message: error.details[0].message
-    });
+    return errorResponse(res, 400, error.details[0].message);
   }
 
   const task = await Task.create({
@@ -21,22 +21,20 @@ exports.createTask = asyncHandler(async (req, res) => {
     createdBy: req.user.id
   });
 
-  res.status(201).json(task);
+  return successResponse(res, 201, "Task created successfully", task);
 });
 
 exports.getTasks = asyncHandler(async (req, res) => {
   const tasks = await Task.find({ createdBy: req.user.id });
 
-  res.status(200).json(tasks);
+  return successResponse(res, 200, "Tasks fetched successfully", tasks);
 });
 
 exports.updateTask = asyncHandler(async (req, res) => {
   const { error } = updateTaskSchema.validate(req.body);
 
   if (error) {
-    return res.status(400).json({
-      message: error.details[0].message
-    });
+    return errorResponse(res, 400, error.details[0].message);
   }
 
   const task = await Task.findOne({
@@ -45,7 +43,7 @@ exports.updateTask = asyncHandler(async (req, res) => {
   });
 
   if (!task) {
-    return res.status(404).json({ message: "Task not found" });
+    return errorResponse(res, 404, "Task not found");
   }
 
   task.title = req.body.title ?? task.title;
@@ -54,7 +52,7 @@ exports.updateTask = asyncHandler(async (req, res) => {
 
   const updatedTask = await task.save();
 
-  res.status(200).json(updatedTask);
+  return successResponse(res, 200, "Task updated successfully", updatedTask);
 });
 
 exports.deleteTask = asyncHandler(async (req, res) => {
@@ -64,10 +62,8 @@ exports.deleteTask = asyncHandler(async (req, res) => {
   });
 
   if (!task) {
-    return res.status(404).json({ message: "Task not found" });
+    return errorResponse(res, 404, "Task not found");
   }
 
-  res.status(200).json({
-    message: "Task deleted successfully"
-  });
+  return successResponse(res, 200, "Task deleted successfully");
 });
