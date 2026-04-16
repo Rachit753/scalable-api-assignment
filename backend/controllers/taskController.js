@@ -25,9 +25,35 @@ exports.createTask = asyncHandler(async (req, res) => {
 });
 
 exports.getTasks = asyncHandler(async (req, res) => {
-  const tasks = await Task.find({ createdBy: req.user.id });
 
-  return successResponse(res, 200, "Tasks fetched successfully", tasks);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+  const status = req.query.status;
+
+  const query = {
+    createdBy: req.user.id
+  };
+
+  if (status) {
+    query.status = status;
+  }
+
+  const skip = (page - 1) * limit;
+
+  const tasks = await Task.find(query)
+    .skip(skip)
+    .limit(limit)
+    .sort({ createdAt: -1 });
+
+  const total = await Task.countDocuments(query);
+
+  return successResponse(res, 200, "Tasks fetched successfully", {
+    tasks,
+    total,
+    page,
+    pages: Math.ceil(total / limit)
+  });
+
 });
 
 exports.updateTask = asyncHandler(async (req, res) => {
